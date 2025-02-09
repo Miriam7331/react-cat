@@ -58,10 +58,10 @@ const Home = () => {
 
   return (
     <div>
-      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>🐱 Razas de Gatos</h1>
+      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>🐱 Adopta un gatito</h1>
 
       {cats.length === 0 ? (
-        <p style={{ textAlign: "center", color: "gray" }}>Cargando razas...</p>
+        <p style={{ textAlign: "center", color: "gray" }}>Cargando gatitos...</p>
       ) : (
         <>
           <Grid>

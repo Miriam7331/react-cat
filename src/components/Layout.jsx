@@ -39,7 +39,7 @@ const Layout = () => {
   return (
     <div>
       <Header>
-        <h1>🐱 Tienda de Gatos</h1>
+        <h1>🐱 Adopción de Gatitos</h1>
         <CartIcon to="/cart">🛒 {cart.length}</CartIcon>
       </Header>
       <main style={{ padding: "20px" }}>
