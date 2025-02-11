@@ -1,4 +1,10 @@
-import { createContext, useContext, useReducer, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useCallback,
+} from "react";
 
 const AppContext = createContext();
 
@@ -46,13 +52,18 @@ export const AppProvider = ({ children }) => {
     localStorage.setItem("favorites", JSON.stringify(state.favorites));
   }, [state.cart, state.favorites]);
 
-  // Funciones para manejar carrito y favoritos
-  const addToCart = (cat) => dispatch({ type: "ADD_TO_CART", payload: cat });
-  const removeFromCart = (id) =>
+  // `useCallback` para evitar recrear funciones innecesariamente
+  const addToCart = useCallback((cat) => {
+    dispatch({ type: "ADD_TO_CART", payload: cat });
+  }, []);
+
+  const removeFromCart = useCallback((id) => {
     dispatch({ type: "REMOVE_FROM_CART", payload: id });
-  const toggleFavorite = (cat) =>
+  }, []);
+
+  const toggleFavorite = useCallback((cat) => {
     dispatch({ type: "TOGGLE_FAVORITE", payload: cat });
-  const getCartCount = () => state.cart.length; // Devuelve la cantidad de gatitos en el carrito
+  }, []);
 
   return (
     <AppContext.Provider
@@ -62,7 +73,6 @@ export const AppProvider = ({ children }) => {
         addToCart,
         removeFromCart,
         toggleFavorite,
-        getCartCount, // Agregamos la nueva función
       }}
     >
       {children}

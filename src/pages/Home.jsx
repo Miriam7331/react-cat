@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { fetchProducts } from "../api/products";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
@@ -53,7 +53,7 @@ const Home = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchTerm = searchParams.get("q") || "";
   const [currentPage, setCurrentPage] = useState(1);
-  const catsPerPage = 12; // Se muestran 12 gatos por página
+  const catsPerPage = 12;
   const navigate = useNavigate();
   const { cart, favorites, addToCart, removeFromCart, toggleFavorite } =
     useAppContext();
@@ -70,20 +70,26 @@ const Home = () => {
     setSearchParams({ q: e.target.value });
   };
 
-  // Filtrar y ordenar resultados
-  const filteredCats = cats
-    .filter((cat) => cat.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    .sort((a, b) => {
-      const search = searchTerm.toLowerCase();
-      const aStarts = a.name.toLowerCase().startsWith(search);
-      const bStarts = b.name.toLowerCase().startsWith(search);
-      return bStarts - aStarts;
-    });
+  // `useMemo` para evitar cálculos innecesarios en el filtrado
+  const filteredCats = useMemo(() => {
+    return cats
+      .filter((cat) =>
+        cat.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      .sort((a, b) => {
+        const search = searchTerm.toLowerCase();
+        const aStarts = a.name.toLowerCase().startsWith(search);
+        const bStarts = b.name.toLowerCase().startsWith(search);
+        return bStarts - aStarts;
+      });
+  }, [cats, searchTerm]);
 
-  // Paginación
-  const indexOfLastCat = currentPage * catsPerPage;
-  const indexOfFirstCat = indexOfLastCat - catsPerPage;
-  const currentCats = filteredCats.slice(indexOfFirstCat, indexOfLastCat);
+  // `useMemo` para evitar recalcular la paginación cada vez
+  const currentCats = useMemo(() => {
+    const indexOfLastCat = currentPage * catsPerPage;
+    const indexOfFirstCat = indexOfLastCat - catsPerPage;
+    return filteredCats.slice(indexOfFirstCat, indexOfLastCat);
+  }, [filteredCats, currentPage, catsPerPage]);
 
   return (
     <div>
@@ -146,7 +152,6 @@ const Home = () => {
         </Grid>
       )}
 
-      {/* Controles de paginación */}
       <Pagination>
         <Button
           disabled={currentPage === 1}
@@ -156,7 +161,7 @@ const Home = () => {
         </Button>
         <span>Página {currentPage}</span>
         <Button
-          disabled={indexOfLastCat >= filteredCats.length}
+          disabled={currentPage * catsPerPage >= filteredCats.length}
           onClick={() => setCurrentPage(currentPage + 1)}
         >
           Siguiente ➡
