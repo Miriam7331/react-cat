@@ -23,14 +23,26 @@ const CartIcon = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
 
   &:hover {
     background: #2980b9;
     color: white;
   }
+`;
+
+const Badge = styled.span`
+  background: red;
+  color: white;
+  font-size: 14px;
+  padding: 3px 7px;
+  border-radius: 50%;
+  position: absolute;
+  top: -5px;
+  right: -5px;
 `;
 
 const Layout = () => {
@@ -40,7 +52,10 @@ const Layout = () => {
     <div>
       <Header>
         <h1>🐱 Adopción de Gatitos</h1>
-        <CartIcon to="/cart">🛒 {cart.length}</CartIcon>
+        <CartIcon to="/cart">
+          🛒
+          {cart.length > 0 && <Badge>{cart.length}</Badge>}
+        </CartIcon>
       </Header>
       <main style={{ padding: "20px" }}>
         <Outlet />

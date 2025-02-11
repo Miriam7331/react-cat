@@ -3,7 +3,7 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
-import { AppProvider } from "./context/AppContext";
+import { AppProvider } from "./context/AppContext"; // Asegúrate de que AppProvider está aquí
 
 function App() {
   return (

@@ -33,7 +33,8 @@ const ButtonsContainer = styled.div`
 `;
 
 const Button = styled.button`
-  background: ${(props) => (props.primary ? "#3498db" : props.danger ? "#e74c3c" : "#2ecc71")};
+  background: ${(props) =>
+    props.primary ? "#3498db" : props.danger ? "#e74c3c" : "#2ecc71"};
   color: white;
   border: none;
   padding: 5px 10px;
@@ -41,12 +42,13 @@ const Button = styled.button`
   cursor: pointer;
 
   &:hover {
-    background: ${(props) => (props.primary ? "#2980b9" : props.danger ? "#c0392b" : "#27ae60")};
+    background: ${(props) =>
+      props.primary ? "#2980b9" : props.danger ? "#c0392b" : "#27ae60"};
   }
 `;
 
 const Cart = () => {
-  const { cart, favorites, dispatch } = useAppContext();
+  const { cart, favorites, removeFromCart, toggleFavorite } = useAppContext(); // Usamos funciones en lugar de dispatch
   const navigate = useNavigate();
 
   return (
@@ -55,7 +57,9 @@ const Cart = () => {
       {cart.length === 0 ? (
         <>
           <p>No hay gatitos en el carrito.</p>
-          <Button primary onClick={() => navigate("/")}>🏠 Volver a Inicio</Button>
+          {/* <Button primary onClick={() => navigate("/")}>
+            🏠 Volver a Inicio
+          </Button> */}
         </>
       ) : (
         cart.map((cat) => (
@@ -64,21 +68,29 @@ const Cart = () => {
               <Image src={cat.image} alt={cat.name} />
               <div>
                 <h3>{cat.name}</h3>
-                <p>{favorites.some((fav) => fav.id === cat.id) ? "⭐ Favorito" : "🤍 No es favorito"}</p>
+                <p>
+                  {favorites.some((fav) => fav.id === cat.id)
+                    ? "⭐ Favorito"
+                    : "🤍 No es favorito"}
+                </p>
               </div>
             </div>
             <ButtonsContainer>
-              <Button danger onClick={() => dispatch({ type: "REMOVE_FROM_CART", payload: cat.id })}>
+              <Button danger onClick={() => removeFromCart(cat.id)}>
                 ❌ Quitar del carrito
               </Button>
-              <Button onClick={() => dispatch({ type: "TOGGLE_FAVORITE", payload: cat })}>
-                {favorites.some((fav) => fav.id === cat.id) ? "❤️ Quitar Me Gusta" : "🤍 Me Gusta"}
+              <Button onClick={() => toggleFavorite(cat)}>
+                {favorites.some((fav) => fav.id === cat.id)
+                  ? "❤️ Quitar Me Gusta"
+                  : "🤍 Me Gusta"}
               </Button>
             </ButtonsContainer>
           </CartItem>
         ))
       )}
-      <Button primary onClick={() => navigate("/")}>🏠 Volver a Inicio</Button>
+      <Button primary onClick={() => navigate("/")}>
+        🏠 Volver a Inicio
+      </Button>
     </Container>
   );
 };

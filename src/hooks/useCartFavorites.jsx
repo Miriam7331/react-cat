@@ -1,6 +1,4 @@
-import { createContext, useContext, useReducer, useEffect } from "react";
-
-const AppContext = createContext();
+import { useReducer, useEffect } from "react";
 
 const initialState = {
   cart: JSON.parse(localStorage.getItem("cart")) || [],
@@ -38,7 +36,7 @@ const reducer = (state, action) => {
   }
 };
 
-export const AppProvider = ({ children }) => {
+const useCartFavorites = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
@@ -46,28 +44,20 @@ export const AppProvider = ({ children }) => {
     localStorage.setItem("favorites", JSON.stringify(state.favorites));
   }, [state.cart, state.favorites]);
 
-  // Funciones para manejar carrito y favoritos
+  // Funciones para manejar el carrito y los favoritos
   const addToCart = (cat) => dispatch({ type: "ADD_TO_CART", payload: cat });
   const removeFromCart = (id) =>
     dispatch({ type: "REMOVE_FROM_CART", payload: id });
   const toggleFavorite = (cat) =>
     dispatch({ type: "TOGGLE_FAVORITE", payload: cat });
-  const getCartCount = () => state.cart.length; // Devuelve la cantidad de gatitos en el carrito
 
-  return (
-    <AppContext.Provider
-      value={{
-        cart: state.cart,
-        favorites: state.favorites,
-        addToCart,
-        removeFromCart,
-        toggleFavorite,
-        getCartCount, // Agregamos la nueva función
-      }}
-    >
-      {children}
-    </AppContext.Provider>
-  );
+  return {
+    cart: state.cart,
+    favorites: state.favorites,
+    addToCart,
+    removeFromCart,
+    toggleFavorite,
+  };
 };
 
-export const useAppContext = () => useContext(AppContext);
+export default useCartFavorites;
